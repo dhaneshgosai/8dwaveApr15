@@ -1,0 +1,6 @@
+framework module Pods_Smart_Music_Dark {
+  umbrella header "Pods-Smart Music Dark-umbrella.h"
+
+  export *
+  module * { export * }
+}
