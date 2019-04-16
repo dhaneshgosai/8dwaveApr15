@@ -12,6 +12,7 @@ import AVFoundation
 import RealmSwift
 import Firebase
 import StoreKit
+import GoogleMobileAds
 
 
 @UIApplicationMain
@@ -24,6 +25,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
+        
+        if !Setting.isPremium {
+            GADMobileAds.sharedInstance().start(completionHandler: nil)
+        }
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
@@ -85,7 +90,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         AudioState.instance.checkForAudioIssues()
         
-        if Setting.didLogin {
+        if Setting.didLogin && !Setting.isPremium {
             // Increase Count
             let current_open_count = UserDefaults.standard.integer(forKey: "kAppOpenCount")
             if current_open_count == 5 {

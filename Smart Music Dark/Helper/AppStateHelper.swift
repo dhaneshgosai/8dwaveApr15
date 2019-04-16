@@ -40,7 +40,7 @@ class AppStateHelper: UIViewController, NVActivityIndicatorViewable {
     }
     func onHandleShowIndicator(){
         let size = CGSize(width: 30, height: 30)
-        startAnimating(size, message: "Loading...", type: NVActivityIndicatorType(rawValue: 24)!, fadeInAnimation: nil)
+        startAnimating(size, message: "Loading...", type: NVActivityIndicatorType.lineSpinFadeLoader, fadeInAnimation: nil)
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
             NVActivityIndicatorPresenter.sharedInstance.setMessage("Preparing...")
         }

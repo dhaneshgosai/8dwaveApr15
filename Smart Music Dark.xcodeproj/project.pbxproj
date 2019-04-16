@@ -517,7 +517,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Smart Music Dark/Pods-Smart Music Dark-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Smart Music Dark/Pods-Smart Music Dark-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/CRNotifications/CRNotifications.framework",
 				"${BUILT_PRODUCTS_DIR}/CTFeedbackSwift/CTFeedbackSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/CarbonKit/CarbonKit.framework",
@@ -554,7 +554,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Smart Music Dark/Pods-Smart Music Dark-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Smart Music Dark/Pods-Smart Music Dark-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

@@ -11,6 +11,9 @@ import RealmSwift
 import GoogleMobileAds
 
 let kShowAdsAfterDelaySec = 10
+let kAppTestInterFullScreenAdId = "ca-app-pub-3940256099942544/4411468910"
+let kAppInterFullScreenAdId = "ca-app-pub-4228875950631290/5725119459"
+
 
 class HomeController: UITableViewController {
     
@@ -178,11 +181,14 @@ class HomeController: UITableViewController {
         setupView()
         onHandleGetData()
         
+        if !Setting.isPremium {
+        
         //Add Observer for Become Active Notifier
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(applicationDidBecomeActive),
                                                name: UIApplication.didBecomeActiveNotification,
             object: nil)
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -211,13 +217,20 @@ class HomeController: UITableViewController {
         // handle show ads event
         let current_active_count = UserDefaults.standard.integer(forKey: "kAppOpenCount")
         if  current_active_count == 1 {
+            self.interstitial = GADInterstitial(adUnitID: kAppTestInterFullScreenAdId) //Replace Actual ID while publish this app
+            self.interstitial.delegate = self
+            let request = GADRequest()
+            request.testDevices = [ kGADSimulatorID ];
+            self.interstitial.load(request)
             //Show Ads after 10 dealy
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(kShowAdsAfterDelaySec)) {
-                self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-4228875950631290/5725119459")
-                let request = GADRequest()
-                self.interstitial.load(request)
+                
                 if self.interstitial.isReady {
-                    self.interstitial.present(fromRootViewController: self)
+                    let appdelegate = UIApplication.shared.delegate as? AppDelegate
+                    if let rootVC = appdelegate?.window?.rootViewController {
+                        self.interstitial.present(fromRootViewController: rootVC)
+                    }
+                    
                 } else {
                     print("Ad wasn't ready")
                 }

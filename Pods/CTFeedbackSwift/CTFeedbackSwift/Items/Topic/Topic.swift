@@ -11,8 +11,8 @@ public protocol TopicProtocol {
 }
 
 enum Topic: String {
-    case question  = "Copyright Infringement"
-    case request   = "Account Issue"
+    case question  = "Question"
+    case request   = "Request"
     case bugReport = "Bug Report"
     case other     = "Other"
 }
