@@ -8,12 +8,16 @@
 
 import UIKit
 import RealmSwift
+import GoogleMobileAds
+
+let kShowAdsAfterDelaySec = 10
 
 class HomeController: UITableViewController {
     
     static var sharedController = HomeController()
 
-
+    var interstitial: GADInterstitial!
+    
     var data = ["Popular Artists", "Popular Music", "Newest Music", "Newest Artists", "Favorites"]
     var search = ""
     var next_page = 1
@@ -173,6 +177,12 @@ class HomeController: UITableViewController {
         HomeController.sharedController = self
         setupView()
         onHandleGetData()
+        
+        //Add Observer for Become Active Notifier
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+            object: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -188,9 +198,31 @@ class HomeController: UITableViewController {
         super.viewDidDisappear(animated)
        // self.navigationController?.setNavigationBarHidden(false, animated: true)
     }
-    
+    deinit {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: UIApplication.didBecomeActiveNotification,
+            object: nil)
+    }
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+    
+    @objc func applicationDidBecomeActive() {
+        // handle show ads event
+        let current_active_count = UserDefaults.standard.integer(forKey: "kAppOpenCount")
+        if  current_active_count == 1 {
+            //Show Ads after 10 dealy
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(kShowAdsAfterDelaySec)) {
+                self.interstitial = GADInterstitial(adUnitID: "ca-app-pub-4228875950631290/5725119459")
+                let request = GADRequest()
+                self.interstitial.load(request)
+                if self.interstitial.isReady {
+                    self.interstitial.present(fromRootViewController: self)
+                } else {
+                    print("Ad wasn't ready")
+                }
+            }
+        }
     }
     
     fileprivate func addLeftButton(){
@@ -623,4 +655,37 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
   
+}
+
+extension HomeController : GADInterstitialDelegate{
+    /// Tells the delegate an ad request succeeded.
+    func interstitialDidReceiveAd(_ ad: GADInterstitial) {
+        print("interstitialDidReceiveAd")
+    }
+    
+    /// Tells the delegate an ad request failed.
+    func interstitial(_ ad: GADInterstitial, didFailToReceiveAdWithError error: GADRequestError) {
+        print("interstitial:didFailToReceiveAdWithError: \(error.localizedDescription)")
+    }
+    
+    /// Tells the delegate that an interstitial will be presented.
+    func interstitialWillPresentScreen(_ ad: GADInterstitial) {
+        print("interstitialWillPresentScreen")
+    }
+    
+    /// Tells the delegate the interstitial is to be animated off the screen.
+    func interstitialWillDismissScreen(_ ad: GADInterstitial) {
+        print("interstitialWillDismissScreen")
+    }
+    
+    /// Tells the delegate the interstitial had been animated off the screen.
+    func interstitialDidDismissScreen(_ ad: GADInterstitial) {
+        print("interstitialDidDismissScreen")
+    }
+    
+    /// Tells the delegate that a user click will open another app
+    /// (such as the App Store), backgrounding the current app.
+    func interstitialWillLeaveApplication(_ ad: GADInterstitial) {
+        print("interstitialWillLeaveApplication")
+    }
 }

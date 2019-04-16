@@ -84,6 +84,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         AudioState.instance.checkForAudioIssues()
+        
+        if Setting.didLogin {
+            // Increase Count
+            let current_open_count = UserDefaults.standard.integer(forKey: "kAppOpenCount")
+            if current_open_count == 5 {
+                UserDefaults.standard.set(1, forKey: "kAppOpenCount")
+            }else{
+                UserDefaults.standard.set(current_open_count + 1, forKey: "kAppOpenCount")
+            }
+        } else {
+            //Do nothing
+        }
 
     }
 
