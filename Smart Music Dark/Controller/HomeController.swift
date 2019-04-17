@@ -216,8 +216,8 @@ class HomeController: UITableViewController {
     @objc func applicationDidBecomeActive() {
         // handle show ads event
         let current_active_count = UserDefaults.standard.integer(forKey: "kAppOpenCount")
-        if  current_active_count == 1 {
-            self.interstitial = GADInterstitial(adUnitID: kAppTestInterFullScreenAdId) //Replace Actual ID while publish this app
+        if  current_active_count == 5 {
+            self.interstitial = GADInterstitial(adUnitID: kAppTestInterFullScreenAdId) //Replace Actual ID while publish this app kAppInterFullScreenAdId
             self.interstitial.delegate = self
             let request = GADRequest()
             request.testDevices = [ kGADSimulatorID ];
