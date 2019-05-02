@@ -12,7 +12,7 @@ import StoreKit
 class PremiumController: UIViewController {
     var premiumOption: Subscription?
     var datasource = [UITableViewCell]() { didSet { tableView.reloadData() }}
-
+    
     lazy var tableView: UITableView = { [weak self] in
         let tb = UITableView()
         tb.translatesAutoresizingMaskIntoConstraints = false
@@ -23,13 +23,13 @@ class PremiumController: UIViewController {
         tb.delegate = self
         return tb
         }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         getData()
     }
-
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.roundCorners([.topLeft, .topRight], radius: 25)
@@ -44,17 +44,19 @@ class PremiumController: UIViewController {
         return button
     }()
     
+    
     func setupView() {
         title = "Premium"
         UIView.setupNavigationTitle(title: "Premium", navigationItem: self.navigationItem)
         let color = UIColor.themeNavbarColor()
         view.backgroundColor = color
-
+        
         let footerView = UIView()
         footerView.backgroundColor = UIColor.themeBaseColor()
         footerView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         view.addSubviews(views: tableView,footerView, enrollButton)
+        
         view.addConstraints(withFormat: "V:|[v0][v1]-30-|", views: tableView, enrollButton)
         
         tableView.horizontal(toView: view)
@@ -62,8 +64,8 @@ class PremiumController: UIViewController {
         tableView.bounces = false
         
         
-        //enrollButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 30).isActive = true
-        //enrollButton.horizontal(toView: view, space: 24)
+        //        enrollButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 30).isActive = true
+        //        enrollButton.horizontal(toView: view, space: 24)
         enrollButton.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24 * 2).isActive = true
         enrollButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         enrollButton.height(48)
@@ -78,16 +80,16 @@ class PremiumController: UIViewController {
         guard let premiumOption = SubscriptionService.shared.options?.first else { return }
         SubscriptionService.shared.purchase(subscription: premiumOption)
     }
-
+    
     func getData() {
         datasource = [
             makeCell(),
             makeCellSecond()
         ]
-
+        
         SubscriptionService.shared.loadSubscriptionOptions()
     }
-
+    
     func makeView(flag: Bool, text: String) -> UIView{
         let view = UIView()
         
@@ -150,7 +152,7 @@ class PremiumController: UIViewController {
         }
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
-        stackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: 30).isActive = true
         return stackView
     }
     
@@ -166,7 +168,7 @@ class PremiumController: UIViewController {
         
         let labelFree = UILabel()
         labelFree.text = "FREE"
-        labelFree.font = AppStateHelper.shared.defaultFontBold(size: 34)
+        labelFree.font = AppStateHelper.shared.defaultFontBold(size: 20)
         labelFree.textColor = UIColor.rgba(132, 144, 161, 1)
         
         let stackView = self.makeStackView(elements: [[true:"Free Streaming with ads"],[true:"Create Limited 8D Tracks"],[false:"Downloads"],[false:"Ad-Free Streaming"],[false:"Listen Offline"]])
@@ -183,7 +185,7 @@ class PremiumController: UIViewController {
         labelFree.translatesAutoresizingMaskIntoConstraints = false
         
         labelFree.centerXAnchor.constraint(equalTo: cellWrapper.centerXAnchor, constant: 0).isActive = true
-        labelFree.topAnchor.constraint(equalTo: cellWrapper.topAnchor, constant: 0).isActive = true
+        labelFree.topAnchor.constraint(equalTo: cellWrapper.topAnchor, constant: -50).isActive = true
         
         stackView.widthAnchor.constraint(equalTo: cellWrapper.widthAnchor, multiplier: 0.65).isActive = true
         stackView.centerXAnchor.constraint(equalTo: cellWrapper.centerXAnchor, constant: 0).isActive = true
@@ -195,7 +197,7 @@ class PremiumController: UIViewController {
         line.widthAnchor.constraint(equalTo: cell.widthAnchor, constant: -35 * 2).isActive = true
         line.heightAnchor.constraint(equalToConstant: 1).isActive = true
         line.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 35).isActive = true
-        line.bottomAnchor.constraint(equalTo: cell.bottomAnchor).isActive = true
+        line.bottomAnchor.constraint(equalTo: cell.bottomAnchor, constant: -45).isActive = true
         
         return cell
     }
@@ -206,7 +208,7 @@ class PremiumController: UIViewController {
         cell.selectionStyle = .none
         
         let cellWrapper = UIView()
-  
+        
         let labelPremium = UILabel()
         labelPremium.text = "PREMIUM"
         labelPremium.font = AppStateHelper.shared.defaultFontBold(size: 34)
@@ -218,8 +220,19 @@ class PremiumController: UIViewController {
         
         let priceView = self.makePriceLabel(price: "$4.99", perDate: "month")
         
+        
+        let bottomnote = self.makePriceLabel2(price:
+            "<div style='color:black !important'>8DWave Premium <ul><li>This subscription automatically renews for $4.99 per month.</li>" +
+                "<li>Payment will be charged to your Apple ID account at the confirmation of purchase.</li>" +
+                "<li>Subscription automatically renews unless it is cancelled at least 24 hours before the end of the current period.</li> " +
+                "<li>Your account will be charged for renewal within 24 hours prior to the end of the current period.</li> " +
+                "<li>You can manage and cancel your subscriptions by going to your account settings on the App Store after purchase.</li> " +
+                "<li>Any unused portion of a free trial period, if offered, will be forfeited when you purchase a subscription.</li>" +
+                
+                "<li><div align='center' style='width:100%; text-align:center'><a href='https://www.8dwave.com/toy.html'>Terms of Use</a> - "  +
+            "<a href='https://www.8dwave.com/privacy.html'>Privacy Policy</a></div></li></ul></div>",perDate: "month")
         cell.addSubview(cellWrapper)
-        cellWrapper.addSubviews(views: labelPremium, stackView, stackViewWithImages, priceView)
+        cellWrapper.addSubviews(views: labelPremium, stackView, stackViewWithImages, priceView,bottomnote)
         
         cellWrapper.translatesAutoresizingMaskIntoConstraints = false
         
@@ -230,20 +243,27 @@ class PremiumController: UIViewController {
         labelPremium.translatesAutoresizingMaskIntoConstraints = false
         
         labelPremium.centerXAnchor.constraint(equalTo: cellWrapper.centerXAnchor, constant: 0).isActive = true
-        labelPremium.topAnchor.constraint(equalTo: cellWrapper.topAnchor, constant: 0).isActive = true
+        labelPremium.topAnchor.constraint(equalTo: cellWrapper.topAnchor, constant: -20).isActive = true
         
         stackViewWithImages.widthAnchor.constraint(equalToConstant: 134).isActive = true
         stackViewWithImages.centerXAnchor.constraint(equalTo: cellWrapper.centerXAnchor).isActive = true
-        stackViewWithImages.topAnchor.constraint(equalTo: labelPremium.bottomAnchor, constant: 3).isActive = true
+        stackViewWithImages.topAnchor.constraint(equalTo: labelPremium.bottomAnchor, constant: 10).isActive = true
         
         stackView.widthAnchor.constraint(equalTo: cellWrapper.widthAnchor, multiplier: 0.65).isActive = true
         stackView.centerXAnchor.constraint(equalTo: cellWrapper.centerXAnchor, constant: 0).isActive = true
-        stackView.topAnchor.constraint(equalTo: stackViewWithImages.bottomAnchor, constant: 3).isActive = true
+        stackView.topAnchor.constraint(equalTo: stackViewWithImages.bottomAnchor, constant: 0).isActive = true
         
-        priceView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 15).isActive = true
+        
+        priceView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: -220).isActive = true
         priceView.centerXAnchor.constraint(equalTo: cellWrapper.centerXAnchor).isActive = true
         priceView.bottomAnchor.constraint(equalTo: cellWrapper.bottomAnchor).isActive = true
-
+        
+        
+        bottomnote.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 0).isActive = true
+        bottomnote.centerXAnchor.constraint(equalTo: cellWrapper.centerXAnchor).isActive = true
+        bottomnote.bottomAnchor.constraint(equalTo: cellWrapper.bottomAnchor).isActive = true
+        bottomnote.rightAnchor.constraint(equalTo: cellWrapper.rightAnchor).isActive = true
+        bottomnote.leftAnchor.constraint(equalTo: cellWrapper.leftAnchor).isActive = true
         
         return cell
     }
@@ -253,7 +273,7 @@ class PremiumController: UIViewController {
         
         let labelPrice = UILabel()
         labelPrice.text = price
-        labelPrice.font = AppStateHelper.shared.defaultFontBold(size: 30)
+        labelPrice.font = AppStateHelper.shared.defaultFontBold(size: 25)
         labelPrice.textColor = UIColor.themeNavbarColor()
         
         let labelPerDate = UILabel()
@@ -275,10 +295,59 @@ class PremiumController: UIViewController {
         
         labelPerDate.leftAnchor.constraint(equalTo: labelPrice.rightAnchor, constant: 0).isActive = true
         labelPerDate.rightAnchor.constraint(equalTo: wrapper.rightAnchor, constant: 0).isActive = true
-        labelPerDate.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor, constant: -5).isActive = true
+        labelPerDate.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor, constant: -225).isActive = true
         return wrapper
     }
-
+    
+    func makePriceLabel2(price: String, perDate: String) -> UIView {
+        let wrapper = UIView()
+        wrapper.height(250)
+        
+        let labelPrice = UITextView()
+        labelPrice.attributedText = price.htmlToAttributedString
+        labelPrice.font = AppStateHelper.shared.defaultFontBold(size: 6)
+        labelPrice.textColor = UIColor.gray
+        labelPrice.height(250)
+        labelPrice.textAlignment = NSTextAlignment.left
+        labelPrice.isEditable = false
+        labelPrice.dataDetectorTypes = UIDataDetectorTypes.all
+        
+        wrapper.addSubview(labelPrice)
+        
+        
+        wrapper.translatesAutoresizingMaskIntoConstraints = false
+        labelPrice.translatesAutoresizingMaskIntoConstraints = false
+        
+        labelPrice.leftAnchor.constraint(equalTo: wrapper.leftAnchor, constant: 0).isActive = true
+        labelPrice.rightAnchor.constraint(equalTo: wrapper.rightAnchor, constant: 0).isActive = true
+        
+        labelPrice.topAnchor.constraint(equalTo: wrapper.topAnchor, constant: 30).isActive = true
+        labelPrice.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor, constant: 0).isActive = true
+        return wrapper
+    }
+    
+    
+    
+    func makeExtrabottomtext(price: String) -> UIView {
+        let wrapper = UIView()
+        
+        let labelPrice = UILabel()
+        labelPrice.text = price
+        labelPrice.font = AppStateHelper.shared.defaultFontBold(size: 30)
+        labelPrice.textColor = UIColor.themeNavbarColor()
+        
+        wrapper.addSubview(labelPrice)
+        
+        
+        wrapper.translatesAutoresizingMaskIntoConstraints = false
+        labelPrice.translatesAutoresizingMaskIntoConstraints = false
+        
+        labelPrice.leftAnchor.constraint(equalTo: wrapper.leftAnchor, constant: 0).isActive = true
+        labelPrice.topAnchor.constraint(equalTo: wrapper.topAnchor, constant: 0).isActive = true
+        labelPrice.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor, constant: 0).isActive = true
+        
+        return wrapper
+    }
 }
 
 extension PremiumController: UITableViewDataSource, UITableViewDelegate {
@@ -292,5 +361,19 @@ extension PremiumController: UITableViewDataSource, UITableViewDelegate {
             return tableView.frame.height * 0.6
         }
         
+    }
+}
+
+extension String {
+    var htmlToAttributedString: NSAttributedString? {
+        guard let data = data(using: .utf8) else { return NSAttributedString() }
+        do {
+            return try NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil)
+        } catch {
+            return NSAttributedString()
+        }
+    }
+    var htmlToString: String {
+        return htmlToAttributedString?.string ?? ""
     }
 }
