@@ -93,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if Setting.didLogin && !Setting.isPremium {
             // Increase Count
             let current_open_count = UserDefaults.standard.integer(forKey: "kAppOpenCount")
-            if current_open_count == 5 {
+            if current_open_count == 2 {
                 UserDefaults.standard.set(1, forKey: "kAppOpenCount")
             }else{
                 UserDefaults.standard.set(current_open_count + 1, forKey: "kAppOpenCount")
