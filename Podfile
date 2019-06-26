@@ -19,7 +19,6 @@ target 'Smart Music Dark' do
   pod 'Google-Mobile-Ads-SDK'
   pod 'CRNotifications'
   pod 'NVActivityIndicatorView'
-  pod 'CRNotifications'
   pod 'CTFeedbackSwift'
   pod 'PKHUD', '~> 5.0'
 
